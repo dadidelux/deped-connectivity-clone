@@ -393,7 +393,7 @@ async function boot() {
     showLoaded();
   } catch (err) {
     console.error(err);
-    showError(`Could not load school data: ${err.message}`);
+    showError(`Could not load data: ${err.message}`);
   }
 }
 

@@ -84,6 +84,20 @@ body {
   padding: 0;
 }
 .filter-bar .hint { font-weight: 400; color: #64748b; font-size: 0.75rem; }
+.filter-bar label[for] {
+  display: block;
+  font-weight: 600;
+  font-size: 0.75rem;
+  margin: 0.5rem 0 0.2rem;
+}
+.filter-bar select {
+  width: 100%;
+  padding: 0.35rem 0.4rem;
+  font-size: 0.85rem;
+  border: 1px solid var(--color-border);
+  border-radius: 4px;
+  background: #fff;
+}
 .checkbox-list {
   max-height: 220px;
   overflow-y: auto;

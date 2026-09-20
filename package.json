@@ -1,0 +1,10 @@
+{
+  "name": "deped-connectivity-clone",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Clean-room static clone of the DICT x DepEd schools connectivity dashboard",
+  "type": "module",
+  "scripts": {
+    "build:data": "node tools/build-dataset.mjs --out public/data"
+  }
+}

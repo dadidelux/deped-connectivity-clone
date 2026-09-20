@@ -1,0 +1,93 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>DICT Freewifi</title>
+<meta name="description" content="Nationwide schools connectivity dashboard for the DICT Free WiFi program." />
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+<link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.css" />
+<link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.Default.css" />
+<link rel="stylesheet" href="/styles.css" />
+</head>
+<body>
+<div id="app" data-loading="true">
+
+  <header class="app-header">
+    <h1>DICT Freewifi <span class="badge">Nationwide</span></h1>
+    <button id="reset-filters" type="button">Reset filters</button>
+  </header>
+
+  <div id="loading-overlay" role="status" aria-live="polite">
+    <p>Loading schools&hellip;</p>
+  </div>
+
+  <div id="error-state" hidden role="alert">
+    <p id="error-message">Could not load school data.</p>
+    <button id="retry-load" type="button">Retry</button>
+  </div>
+
+  <main class="layout" hidden>
+    <aside class="filter-bar" aria-label="Filters">
+      <h2>Filters</h2>
+
+      <fieldset id="filter-status">
+        <legend>Status</legend>
+        <label><input type="checkbox" value="online" checked /> Online</label>
+        <label><input type="checkbox" value="offline" checked /> Offline</label>
+      </fieldset>
+
+      <fieldset id="filter-connection-type">
+        <legend>Connection type</legend>
+        <div class="checkbox-list" id="connection-type-list"></div>
+      </fieldset>
+    </aside>
+
+    <section class="map-region" aria-label="School map">
+      <div id="map"></div>
+    </section>
+
+    <aside class="overview-sidebar" aria-label="Overview">
+      <div class="clock" id="clock"></div>
+
+      <div class="donut-wrap">
+        <canvas id="connected-donut" width="120" height="120" role="img" aria-label="Percent connected"></canvas>
+        <div class="donut-label">
+          <strong id="connected-pct">&mdash;</strong>
+          <span>connected</span>
+        </div>
+      </div>
+
+      <dl class="stat-grid">
+        <div><dt>Visible</dt><dd id="stat-visible">0</dd></div>
+        <div><dt>Online</dt><dd id="stat-online">0</dd></div>
+        <div><dt>Offline</dt><dd id="stat-offline">0</dd></div>
+      </dl>
+
+      <h3>Connection type breakdown</h3>
+      <ul class="connection-breakdown" id="connection-breakdown"></ul>
+      <p class="note">Bucket labels come from the data itself &mdash; a new connection type shows up as a new row, it never silently falls into "Others".</p>
+
+      <h3>Map legend</h3>
+      <ul class="legend" id="map-legend">
+        <li><span class="dot online"></span> Online</li>
+        <li><span class="dot offline"></span> Offline</li>
+      </ul>
+      <p class="note">No "Limited" tier is shown: the live <code>connectivity</code> column only ever holds 0 or 1, so a third legend state would be backed by zero data.</p>
+    </aside>
+  </main>
+
+  <div id="school-modal" class="modal" hidden role="dialog" aria-modal="true" aria-labelledby="modal-title">
+    <div class="modal-content">
+      <button class="modal-close" id="modal-close" aria-label="Close">&times;</button>
+      <h2 id="modal-title"></h2>
+      <dl id="modal-body"></dl>
+    </div>
+  </div>
+</div>
+
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script src="https://unpkg.com/leaflet.markercluster@1.5.3/dist/leaflet.markercluster.js"></script>
+<script type="module" src="/app.js"></script>
+</body>
+</html>

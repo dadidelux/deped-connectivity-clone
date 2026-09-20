@@ -1,0 +1,66 @@
+{
+  "file": "schools.v1.2cabb3f1.json",
+  "builtAt": "2026-09-15T15:40:03.965Z",
+  "source": "https://deped-schools-connectivity.vercel.app/dict_schools_masterlist_with_congressman.csv",
+  "columns": [
+    "id",
+    "school_name",
+    "latitude",
+    "longitude",
+    "region",
+    "province",
+    "legislative_district",
+    "municipality",
+    "barangay",
+    "congressman",
+    "connectivity",
+    "project_allocation",
+    "type_of_connection"
+  ],
+  "rowCount": 47954,
+  "malformedRows": 0,
+  "invalidCoordinateRows": 602,
+  "outOfBoundsRows": 0,
+  "duplicateIdRows": 0,
+  "connectivityValues": {
+    "0": 797,
+    "1": 47157
+  },
+  "connectionTypeCounts": {
+    "(blank)": 6565,
+    "fiber": 16938,
+    "starlink": 9909,
+    "cable": 3695,
+    "dsl": 836,
+    "mobile data": 1136,
+    "satellite": 2466,
+    "wireless broadband": 3675,
+    "point-to-point": 2708,
+    "others": 26
+  },
+  "regions": [
+    "BARMM",
+    "CAR",
+    "CARAGA",
+    "NCR",
+    "NIR",
+    "Region I",
+    "Region II",
+    "Region III",
+    "Region IV-A",
+    "Region IV-B",
+    "Region IX",
+    "Region V",
+    "Region VI",
+    "Region VII",
+    "Region VIII",
+    "Region X",
+    "Region XI",
+    "Region XII"
+  ],
+  "bytes": {
+    "raw": 8475144,
+    "gzip": 1553502,
+    "brotli": 1085589
+  }
+}

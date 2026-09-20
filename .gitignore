@@ -7,3 +7,5 @@ github_pat_90days/
 
 .env
 .env*
+.vercel
+.env*

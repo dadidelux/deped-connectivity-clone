@@ -41,8 +41,13 @@ const state = {
   schools: [], // [{ id, name, lat, lng, region, province, ..., connectivity, connectionType }] — all 18 regions
   connectionTypes: [], // sorted by count desc: [{ key, label, count }]
   filters: {
-    status: new Set(["online", "offline"]),
+    status: "all",
     connectionTypes: new Set(),
+    region: "all",
+    province: "all",
+    district: "all",
+    municipality: "all",
+    project: "all",
   },
   markers: null,
   map: null,
@@ -57,6 +62,8 @@ function cacheEls() {
     "stat-visible", "stat-online", "stat-offline", "connected-pct",
     "connected-donut", "clock", "reset-filters", "school-modal", "modal-title",
     "modal-body", "modal-close",
+    "filter-region", "filter-province", "filter-district", "filter-municipality", "filter-project",
+    "filter-status-select",
   ].forEach((id) => { els[id] = document.getElementById(id); });
   els.layout = document.querySelector(".layout");
 }
@@ -93,7 +100,6 @@ function rehydrate(columns, rows) {
     district: row[idx.legislative_district],
     municipality: row[idx.municipality],
     barangay: row[idx.barangay],
-    congressman: row[idx.congressman],
     connectivity: normalizeConnectivity(row[idx.connectivity]),
     project: row[idx.project_allocation],
     connectionType: (row[idx.type_of_connection] || "").toLowerCase(),
@@ -141,14 +147,48 @@ function renderConnectionTypeFilter(types) {
   }
 }
 
+const LOCATION_FILTER_FIELDS = [
+  { field: "region", elId: "filter-region" },
+  { field: "province", elId: "filter-province" },
+  { field: "district", elId: "filter-district" },
+  { field: "municipality", elId: "filter-municipality" },
+  { field: "project", elId: "filter-project" },
+];
+
+function renderLocationFilters(schools) {
+  for (const { field, elId } of LOCATION_FILTER_FIELDS) {
+    const select = els[elId];
+    const current = state.filters[field];
+    const values = [...new Set(schools.map((s) => s[field]).filter(Boolean))].sort();
+    select.innerHTML = "";
+    const allOption = document.createElement("option");
+    allOption.value = "all";
+    allOption.textContent = "All";
+    select.append(allOption);
+    for (const value of values) {
+      const option = document.createElement("option");
+      option.value = value;
+      option.textContent = value;
+      select.append(option);
+    }
+    select.value = values.includes(current) ? current : "all";
+  }
+}
+
 function initFilterDefaults() {
   state.filters.connectionTypes = new Set(state.connectionTypes.map((t) => t.key));
+  for (const { field } of LOCATION_FILTER_FIELDS) {
+    state.filters[field] = "all";
+  }
 }
 
 function getFilteredSchools() {
   return state.schools.filter((s) => {
-    if (!state.filters.status.has(s.connectivity)) return false;
+    if (state.filters.status !== "all" && s.connectivity !== state.filters.status) return false;
     if (!state.filters.connectionTypes.has(s.connectionType)) return false;
+    for (const { field } of LOCATION_FILTER_FIELDS) {
+      if (state.filters[field] !== "all" && s[field] !== state.filters[field]) return false;
+    }
     return true;
   });
 }
@@ -238,7 +278,6 @@ function openModal(school) {
     ["Municipality", school.municipality],
     ["Barangay", school.barangay],
     ["District", school.district],
-    ["Congressman", school.congressman],
     ["Status", school.connectivity === "online" ? "Online" : "Offline"],
     ["Connection type", CONFIG.CONNECTION_TYPE_LABELS[school.connectionType] ?? "Not specified"],
     ["Project", school.project],
@@ -325,17 +364,21 @@ async function boot() {
   els["reset-filters"].addEventListener("click", () => {
     initFilterDefaults();
     renderConnectionTypeFilter(state.connectionTypes);
-    document.querySelectorAll('#filter-status input[type="checkbox"]').forEach((cb) => { cb.checked = true; });
-    state.filters.status = new Set(["online", "offline"]);
+    renderLocationFilters(state.schools);
+    els["filter-status-select"].value = "all";
+    state.filters.status = "all";
     applyFilters();
   });
-  document.querySelectorAll('#filter-status input[type="checkbox"]').forEach((cb) => {
-    cb.addEventListener("change", () => {
-      if (cb.checked) state.filters.status.add(cb.value);
-      else state.filters.status.delete(cb.value);
+  els["filter-status-select"].addEventListener("change", (e) => {
+    state.filters.status = e.target.value;
+    applyFilters();
+  });
+  for (const { field, elId } of LOCATION_FILTER_FIELDS) {
+    els[elId].addEventListener("change", (e) => {
+      state.filters[field] = e.target.value;
       applyFilters();
     });
-  });
+  }
 
   try {
     const { columns, rows } = await loadData();
@@ -346,6 +389,7 @@ async function boot() {
     initFilterDefaults();
     initMap();
     renderConnectionTypeFilter(state.connectionTypes);
+    renderLocationFilters(state.schools);
     applyFilters();
     showLoaded();
   } catch (err) {

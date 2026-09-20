@@ -31,10 +31,24 @@
     <aside class="filter-bar" aria-label="Filters">
       <h2>Filters</h2>
 
-      <fieldset id="filter-status">
-        <legend>Status</legend>
-        <label><input type="checkbox" value="online" checked /> Online</label>
-        <label><input type="checkbox" value="offline" checked /> Offline</label>
+      <fieldset id="filter-location">
+        <legend>Location &amp; project</legend>
+        <label for="filter-region">Region</label>
+        <select id="filter-region"><option value="all">All</option></select>
+        <label for="filter-province">Province</label>
+        <select id="filter-province"><option value="all">All</option></select>
+        <label for="filter-district">District</label>
+        <select id="filter-district"><option value="all">All</option></select>
+        <label for="filter-municipality">Municipality</label>
+        <select id="filter-municipality"><option value="all">All</option></select>
+        <label for="filter-status-select">Status</label>
+        <select id="filter-status-select">
+          <option value="all" selected>All</option>
+          <option value="online">Online</option>
+          <option value="offline">Offline</option>
+        </select>
+        <label for="filter-project">Project</label>
+        <select id="filter-project"><option value="all">All</option></select>
       </fieldset>
 
       <fieldset id="filter-connection-type">

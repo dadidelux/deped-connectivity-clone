@@ -14,12 +14,13 @@
 
 const CONFIG = {
   DATA_SOURCE: "static", // 'static' | 'api' — swap later without touching the UI
+  REGION: "Region IV-A",
   MAP: {
-    CENTER: [12.8797, 121.774],
-    ZOOM: 6,
+    CENTER: [14.0, 121.5],
+    ZOOM: 9,
     BOUNDS: [
-      [4.0, 116.0],
-      [21.2, 126.8],
+      [13.0, 120.0],
+      [15.0, 123.0],
     ],
   },
   CONNECTION_TYPE_LABELS: {
@@ -43,7 +44,6 @@ const state = {
   filters: {
     status: "all",
     connectionTypes: new Set(),
-    region: "all",
     province: "all",
     district: "all",
     municipality: "all",
@@ -62,7 +62,7 @@ function cacheEls() {
     "stat-visible", "stat-online", "stat-offline", "connected-pct",
     "connected-donut", "clock", "reset-filters", "school-modal", "modal-title",
     "modal-body", "modal-close",
-    "filter-region", "filter-province", "filter-district", "filter-municipality", "filter-project",
+    "filter-province", "filter-district", "filter-municipality", "filter-project",
     "filter-status-select",
   ].forEach((id) => { els[id] = document.getElementById(id); });
   els.layout = document.querySelector(".layout");
@@ -148,7 +148,6 @@ function renderConnectionTypeFilter(types) {
 }
 
 const LOCATION_FILTER_FIELDS = [
-  { field: "region", elId: "filter-region" },
   { field: "province", elId: "filter-province" },
   { field: "district", elId: "filter-district" },
   { field: "municipality", elId: "filter-municipality" },
@@ -383,7 +382,7 @@ async function boot() {
   try {
     const { columns, rows } = await loadData();
     state.columns = columns;
-    state.schools = rehydrate(columns, rows);
+    state.schools = rehydrate(columns, rows).filter((s) => s.region === CONFIG.REGION);
     state.connectionTypes = buildConnectionTypeIndex(state.schools);
 
     initFilterDefaults();
